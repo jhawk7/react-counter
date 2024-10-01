@@ -1,12 +1,11 @@
-import { useState } from "react"
-import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native"
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native"
 
-const Clicker = ({clicks, onClick}) => {
+const ResetButton = ({onClick}) => {
 
   return (
     <View>
       <TouchableOpacity style={styles.button} onPress={onClick}>
-        <Text style={styles.text}>{clicks}</Text>
+        <Text style={styles.text}>RESET</Text>
       </TouchableOpacity>
     </View>
   )
@@ -14,7 +13,7 @@ const Clicker = ({clicks, onClick}) => {
 
 const styles = StyleSheet.create({
   button:{
-      backgroundColor:'#3F51B5',
+      backgroundColor:'#e47564',
       padding:50,
       margin:50,
       width:'100%',
@@ -28,4 +27,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default Clicker
+export default ResetButton

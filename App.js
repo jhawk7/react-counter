@@ -1,10 +1,12 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
-import Clicker from './components/Clicker.js';
+import Counter from './components/Counter.js';
 import { useEffect, useState } from 'react';
 import * as Haptics from 'expo-haptics';
+import ResetButton from './components/ResetButton.js';
 
 const App = () => {
+  const [counter, setCounter] = useState()
   const getCount = async () => {
     const count = await fetch('url', {
       method: 'GET',
@@ -15,39 +17,59 @@ const App = () => {
     .then(response => response.json())
     .then(res => {
       console.log(res)
-      return res.count
+      return Number(res.count)
     })
     .catch(error => {
       console.error(error)
+      return 0
     })
 
-    return count
+    setCounter(count)
   }
 
-  const updateClick = () => {
-    updateCounter(counter +1)
+  const updateCounter = async () => {
     Haptics.impactAsync()
-    fetch('url', {
+    setCounter(counter +1)
+    await fetch('url', {
       method: 'PATCH',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
       }
     })
+    .catch(error => {
+      console.log(error)
+    })
   }
 
-  let initialCount 
-  useEffect(() => {
-    initialCount = getCount()
-  })
+  const resetCounter = async () => {
+    Haptics.impactAsync()
+    setCounter(0)
+    await fetch('http://192.168.50.177:8888/count', {
+      method: 'PUT',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        counter: 0,
+      })
+    })
+    .catch(error => {
+      console.log(error)
+    })
+  }
 
-  const [counter, updateCounter] = useState(initialCount)
+  useEffect(() => {
+    getCount()
+  }, [])
 
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Clicker</Text>
-      <Clicker clicks={counter}  onClick={updateClick}/>
+      <Text style={styles.title}>Counter</Text>
+      <Counter clicks={counter} onClick={updateCounter}/>
+      <ResetButton onClick={resetCounter}/>
       <StatusBar style="auto" />
     </View>
   );
@@ -56,7 +78,7 @@ const App = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#f0ead6',
     alignItems: 'center',
     justifyContent: 'center',
   },
