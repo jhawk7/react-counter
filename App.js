@@ -7,8 +7,19 @@ import ResetButton from './components/ResetButton.js';
 
 const App = () => {
   const [counter, setCounter] = useState()
+  const [show, setShow] = useState(false)
+  const ws = new WebSocket("ws_url")
+
+  useEffect(() => {
+    getCount()
+  }, [])
+
+  ws.onerror = e => {
+    console.log(e.data)
+  }
+
   const getCount = async () => {
-    const count = await fetch('url', {
+    const count = await fetch('api_url', {
       method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -17,7 +28,7 @@ const App = () => {
     .then(response => response.json())
     .then(res => {
       console.log(res)
-      return Number(res.count)
+      return Number(res.data.count)
     })
     .catch(error => {
       console.error(error)
@@ -25,50 +36,31 @@ const App = () => {
     })
 
     setCounter(count)
+    setShow(true)
   }
 
   const updateCounter = async () => {
     Haptics.impactAsync()
     setCounter(counter +1)
-    await fetch('url', {
-      method: 'PATCH',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      }
-    })
-    .catch(error => {
-      console.log(error)
-    })
+
+    ws.send(JSON.stringify({
+      event: "increment",
+    }))
   }
 
   const resetCounter = async () => {
     Haptics.impactAsync()
     setCounter(0)
-    await fetch('http://192.168.50.177:8888/count', {
-      method: 'PUT',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        counter: 0,
-      })
-    })
-    .catch(error => {
-      console.log(error)
-    })
+
+    ws.send(JSON.stringify({
+      event: "reset",
+    }))
   }
-
-  useEffect(() => {
-    getCount()
-  }, [])
-
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Counter</Text>
-      <Counter clicks={counter} onClick={updateCounter}/>
+        {show ? <Counter clicks={counter} onClick={updateCounter}/> : <Text>Loading...</Text>}
       <ResetButton onClick={resetCounter}/>
       <StatusBar style="auto" />
     </View>
