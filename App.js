@@ -8,7 +8,7 @@ import ResetButton from './components/ResetButton.js';
 const App = () => {
   const [counter, setCounter] = useState()
   const [show, setShow] = useState(false)
-  const ws = new WebSocket("ws_url")
+  const ws = new WebSocket("ws")
 
   useEffect(() => {
     getCount()
@@ -19,7 +19,7 @@ const App = () => {
   }
 
   const getCount = async () => {
-    const count = await fetch('api_url', {
+    const count = await fetch('get-count-url', {
       method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -28,7 +28,7 @@ const App = () => {
     .then(response => response.json())
     .then(res => {
       console.log(res)
-      return Number(res.data.count)
+      return Number(res.count)
     })
     .catch(error => {
       console.error(error)
