@@ -3,7 +3,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native"
 const Clicker = ({clicks, onClick}) => {
 
   return (
-    <View>
+    <View style={styles.container}>
       <TouchableOpacity style={styles.button} onPress={onClick}>
         <Text style={styles.text}>{clicks}</Text>
       </TouchableOpacity>
@@ -12,19 +12,23 @@ const Clicker = ({clicks, onClick}) => {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   button:{
-      backgroundColor: '#4786df', //'#3F51B5',
-      padding:100,
-      margin:20,
-      marginTop: 50,
-      width:'100%',
-      borderRadius:100,
-      alignItems:'center'
+    backgroundColor: '#4786df', //'#3F51B5',
+    padding:100,
+    margin:20,
+    marginTop: 50,
+    width:'100%',
+    borderRadius:100,
+    alignItems:'center'
   },
   text:{
-      fontWeight:'bold', 
-      color:'white', 
-      fontSize:20
+    fontWeight:'bold', 
+    color:'white', 
+    fontSize:20
   }
 });
 

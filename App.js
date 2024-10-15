@@ -4,14 +4,15 @@ import Counter from './components/Counter.js';
 import { useEffect, useState } from 'react';
 import * as Haptics from 'expo-haptics';
 import ResetButton from './components/ResetButton.js';
+import {API_URL, WS_URL} from '@env';
 
 const App = () => {
   const [counter, setCounter] = useState()
   const [show, setShow] = useState(false)
-  const ws = new WebSocket(process.env.REACT_APP_WS_URL)
+  const ws = new WebSocket(WS_URL)
 
   useEffect(() => {
-    getCount()
+    getCount(3)
   }, [])
 
   ws.onerror = e => {
@@ -19,7 +20,7 @@ const App = () => {
   }
 
   const getCount = async () => {
-    const count = await fetch(process.env.REACT_APP_API_URL, {
+    const count = await fetch(API_URL, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -32,11 +33,13 @@ const App = () => {
     })
     .catch(error => {
       console.error(error)
-      return 0
+      return -1
     })
 
-    setCounter(count)
-    setShow(true)
+    if (count >= 0) {
+      setCounter(count)
+      setShow(true)
+    }
   }
 
   const updateCounter = async () => {
@@ -60,8 +63,8 @@ const App = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Counter</Text>
-        {show ? <Counter clicks={counter} onClick={updateCounter}/> : <Text>Loading...</Text>}
-      <ResetButton onClick={resetCounter}/>
+        {show ? <Counter clicks={counter} onClick={updateCounter}/> : <Text style={styles.loading}>Loading...</Text>}
+      {show && <ResetButton onClick={resetCounter}/>}
       <StatusBar style="auto" />
     </View>
   );
@@ -77,7 +80,14 @@ const styles = StyleSheet.create({
   title:{
     fontWeight: 'bold',
     color:'black',
-    fontSize:40
+    fontSize:40,
+    marginVertical: 20
+  },
+  loading: {
+    fontWeight: 'medium',
+    color: 'black',
+    fontSize: 20,
+    marginVertical: 50
   },
 });
 
