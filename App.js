@@ -12,7 +12,7 @@ const App = () => {
   const ws = new WebSocket(WS_URL)
 
   useEffect(() => {
-    getCount(3)
+    getCount()
   }, [])
 
   ws.onerror = e => {
