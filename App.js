@@ -9,7 +9,7 @@ import {API_URL, WS_URL} from '@env';
 const App = () => {
   const [counter, setCounter] = useState()
   const [show, setShow] = useState(false)
-  const ws = new WebSocket(WS_URL)
+  const ws = new WebSocket(process.env.EXPO_PUBLIC_WS_URL || WS_URL)
 
   useEffect(() => {
     getCount()
@@ -20,7 +20,8 @@ const App = () => {
   }
 
   const getCount = async () => {
-    const count = await fetch(API_URL, {
+    const apiUrl = process.env.EXPO_PUBLIC_API_URL || API_URL
+    const count = await fetch(apiUrl, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -85,7 +86,7 @@ const styles = StyleSheet.create({
   },
   loading: {
     fontWeight: 'medium',
-    color: 'black',
+    color: 'white',
     fontSize: 20,
     marginVertical: 50
   },
