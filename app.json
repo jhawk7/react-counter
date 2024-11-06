@@ -23,7 +23,7 @@
         "android.permission.INTERNET"
       ],
       "package": "com.dotdash.Clicker",
-      "versionCode": 8
+      "versionCode": 9
     },
     "web": {
       "favicon": "./assets/favicon.png"
